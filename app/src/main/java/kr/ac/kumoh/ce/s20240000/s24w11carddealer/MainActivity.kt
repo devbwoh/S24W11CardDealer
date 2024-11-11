@@ -1,5 +1,6 @@
 package kr.ac.kumoh.ce.s20240000.s24w11carddealer
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,11 +19,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kr.ac.kumoh.ce.s20240000.s24w11carddealer.ui.theme.S24W11CardDealerTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,26 +45,43 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+    val viewModel: CardViewModel = viewModel()
+
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
             Modifier.padding(innerPadding),
         ) {
             //CardImages()
-            CardSection()
-            ShuffleButton()
+            CardSection(viewModel)
+            ShuffleButton {
+                viewModel.shuffle()
+            }
         }
     }
 }
 
 @Composable
-fun ColumnScope.CardSection() {
+@SuppressLint("DiscouragedApi")
+fun ColumnScope.CardSection(viewModel: CardViewModel = viewModel()) {
+    val cards by viewModel.cards.observeAsState(emptyList())
+    val context = LocalContext.current
+
     val cardResources = IntArray(5)
 
-    cardResources[0] = R.drawable.c_10_of_spades
-    cardResources[1] = R.drawable.c_jack_of_spades2
-    cardResources[2] = R.drawable.c_queen_of_spades2
-    cardResources[3] = R.drawable.c_king_of_spades2
-    cardResources[4] = R.drawable.c_ace_of_spades
+    cards.forEachIndexed { index, cardName ->
+        cardResources[index] = context.resources.getIdentifier(
+            cardName,
+            "drawable",
+            context.packageName
+        )
+    }
+
+//    cardResources[0] = R.drawable.c_10_of_spades
+//    cardResources[1] = R.drawable.c_jack_of_spades2
+//    cardResources[2] = R.drawable.c_queen_of_spades2
+//    cardResources[3] = R.drawable.c_king_of_spades2
+//    cardResources[4] = R.drawable.c_ace_of_spades
+
     CardImages(cardResources)
 }
 
@@ -89,7 +112,7 @@ fun ColumnScope.CardImages(res: IntArray) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .background(Color(0,100,0))
+                .background(Color(0, 100, 0))
         ) {
             CardRow(res, 0)
             CardRow(res, 1)
@@ -131,11 +154,11 @@ fun ColumnScope.CardRow(res: IntArray, row: Int) {
 }
 
 @Composable
-fun ShuffleButton() {
+fun ShuffleButton(onDeal: () -> Unit) {
     Button(
         modifier = Modifier.fillMaxWidth(),
-        onClick = {},
+        onClick = { onDeal() },
     ) {
-        Text("Good Luck")
+        Text(stringResource(R.string.good_luck))
     }
 }

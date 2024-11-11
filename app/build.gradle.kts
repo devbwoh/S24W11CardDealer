@@ -41,6 +41,13 @@ android {
 
 dependencies {
 
+    // NOTE: viewModel() 사용하기 위해 추가
+    //implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // NOTE: observeAsState 사용하기 위해 추가
+    implementation(libs.androidx.runtime.livedata)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
