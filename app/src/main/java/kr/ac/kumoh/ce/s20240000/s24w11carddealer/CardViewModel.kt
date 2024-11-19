@@ -3,9 +3,9 @@ package kr.ac.kumoh.ce.s20240000.s24w11carddealer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlin.random.Random
 
 class CardViewModel : ViewModel() {
+    private val cardModel = CardModel()
     private val _cards = MutableLiveData<List<String>>(
         listOf(
             "c_10_of_spades",
@@ -19,11 +19,7 @@ class CardViewModel : ViewModel() {
         get() = _cards
 
     fun shuffle() {
-        val newCards = mutableSetOf<Int>()
-
-        while (newCards.size < 5) {
-            newCards.add(Random.nextInt(52))
-        }
+        val newCards = cardModel.dealCards()
 
         _cards.value = newCards.sorted().map { getCardName(it) }
     }

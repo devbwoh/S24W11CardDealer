@@ -66,7 +66,7 @@ fun ColumnScope.CardSection(viewModel: CardViewModel = viewModel()) {
     val cards by viewModel.cards.observeAsState(emptyList())
     val context = LocalContext.current
 
-    val cardResources = IntArray(5)
+    val cardResources = IntArray(cards.size)
 
     cards.forEachIndexed { index, cardName ->
         cardResources[index] = context.resources.getIdentifier(

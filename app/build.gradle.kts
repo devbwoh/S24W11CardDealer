@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // NOTE: observeAsState 사용하기 위해 추가
+    //implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
     implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.androidx.core.ktx)
