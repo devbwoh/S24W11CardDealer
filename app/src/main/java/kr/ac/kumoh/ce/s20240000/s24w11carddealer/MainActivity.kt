@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,6 +67,8 @@ fun ColumnScope.CardSection(viewModel: CardViewModel = viewModel()) {
     val cards by viewModel.cards.observeAsState(emptyList())
     val context = LocalContext.current
 
+    if (cards.isEmpty()) return
+
     val cardResources = IntArray(cards.size)
 
     cards.forEachIndexed { index, cardName ->
@@ -75,12 +78,6 @@ fun ColumnScope.CardSection(viewModel: CardViewModel = viewModel()) {
             context.packageName
         )
     }
-
-//    cardResources[0] = R.drawable.c_10_of_spades
-//    cardResources[1] = R.drawable.c_jack_of_spades2
-//    cardResources[2] = R.drawable.c_queen_of_spades2
-//    cardResources[3] = R.drawable.c_king_of_spades2
-//    cardResources[4] = R.drawable.c_ace_of_spades
 
     CardImages(cardResources)
 }
@@ -97,14 +94,7 @@ fun ColumnScope.CardImages(res: IntArray) {
                 .background(Color(0, 100, 0))
         ) {
             res.forEachIndexed { index, res ->
-                Image(
-                    painter = painterResource(res),
-                    contentDescription = "card ${index + 1}",
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(4.dp)
-                        .weight(1f)
-                )
+                CardImageView(res, "card ${index + 1}")
             }
         }
     }
@@ -117,14 +107,7 @@ fun ColumnScope.CardImages(res: IntArray) {
             CardRow(res, 0)
             CardRow(res, 1)
             Row(Modifier.weight(1f)) {
-                Image(
-                    painter = painterResource(res[4]),
-                    contentDescription = "5th card",
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(4.dp)
-                        .weight(1f)
-                )
+                CardImageView(res[4], "card 5")
             }
         }
     }
@@ -134,23 +117,21 @@ fun ColumnScope.CardImages(res: IntArray) {
 fun ColumnScope.CardRow(res: IntArray, row: Int) {
     // Row의 weight는 세로 화면에서 균등 분배
     Row(Modifier.weight(1f)) {
-        Image(
-            painter = painterResource(res[row * 2]),
-            contentDescription = "card ${row * 2 + 1}",
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(4.dp)
-                .weight(1f)
-        )
-        Image(
-            painter = painterResource(res[row * 2 + 1]),
-            contentDescription = "card ${row * 2 + 1 + 1}",
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(4.dp)
-                .weight(1f)
-        )
+        CardImageView(res[row * 2], "card ${row * 2 + 1}")
+        CardImageView(res[row * 2 + 1], "card ${row * 2 + 1 + 1}")
     }
+}
+
+@Composable
+fun RowScope.CardImageView(res: Int, desc: String) {
+    Image(
+        painter = painterResource(res),
+        contentDescription = desc,
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(4.dp)
+            .weight(1f)
+    )
 }
 
 @Composable
